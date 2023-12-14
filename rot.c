@@ -13,7 +13,6 @@ void t_rotl(stack_t **head, __attribute__((unused)) unsigned int count)
 	{
 		return;
 	}
-
 	tmp = *head;
 	aptr = (*head)->next;
 
@@ -51,8 +50,10 @@ void t_rotr(stack_t **head, __attribute__((unused)) unsigned int count)
 	llat->prev->next = NULL;
 	llat->prev = NULL;
 
-	for (; (*head)->next != NULL; (*head) = (*head)->next)
+	while ((*head)->next != NULL)
 	{
 		(*head)->prev = llat;
+		(*head) = (*head)->next;
 	}
+	(*head)->prev = llat;
 }

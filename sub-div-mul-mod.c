@@ -35,7 +35,7 @@ void t_sub(stack_t **head, unsigned int count)
  */
 void t_div(stack_t **head, unsigned int count)
 {
-	stack_t *p;
+	stack_t *p, *aux;
 	int len = 0, aptr;
 
 	for (p = *head; p; p = p->next, len++)
@@ -50,25 +50,21 @@ void t_div(stack_t **head, unsigned int count)
 		free_stack(*head);
 		exit(EXIT_FAILURE);
 	}
-
-	for (p = *head; len > 1; len--)
+	p = *head;
+	if (p->n == 0)
 	{
-		if (p->n == 0)
-		{
-			fprintf(stderr, "L%d: division by zero\n", count);
-			fclose(bus.file);
-			free(bus.content);
-			free_stack(*head);
-			exit(EXIT_FAILURE);
-		}
-
-		aptr = p->next->n / p->n;
-		p->next->n = aptr;
-		*head = p->next;
-		free(p);
+		fprintf(stderr, "L%d: division by zero\n", count);
+		fclose(bus.file);
+		free(bus.content);
+		free_stack(*head);
+		exit(EXIT_FAILURE);
 	}
+	aptr = p->next->n / p->n;
+	p->next->n = aptr;
+	aux = p->next;
+	*head = aux;
+	free(p);
 }
-
 /**
  * t_mul - function that multiplies the elements of the stack.
  * @head: pointer to an array head
@@ -76,14 +72,13 @@ void t_div(stack_t **head, unsigned int count)
  */
 void t_mul(stack_t **head, unsigned int count)
 {
-	stack_t *p;
+	stack_t *p, *aux;
 	int len = 0, aptr;
 
 	for (p = *head; p; p = p->next, len++)
 	{
 		/* Loop body is empty as everything is now in the loop */
 	}
-
 	if (len < 2)
 	{
 		fprintf(stderr, "L%d: can't mul, stack too short\n", count);
@@ -92,14 +87,12 @@ void t_mul(stack_t **head, unsigned int count)
 		free_stack(*head);
 		exit(EXIT_FAILURE);
 	}
-
-	for (p = *head; len > 1; len--)
-	{
-		aptr = p->next->n * p->n;
-		p->next->n = aptr;
-		*head = p->next;
-		free(p);
-	}
+	p = *head;
+	aptr = p->next->n * p->n;
+	p->next->n = aptr;
+	aux = p->next;
+	*head = aux;
+	free(p);
 }
 
 /**
@@ -109,7 +102,7 @@ void t_mul(stack_t **head, unsigned int count)
  */
 void t_mod(stack_t **head, unsigned int count)
 {
-	stack_t *p;
+	stack_t *p, *aux;
 	int len = 0, aptr;
 
 	for (p = *head; p; p = p->next, len++)
@@ -124,19 +117,19 @@ void t_mod(stack_t **head, unsigned int count)
 		free_stack(*head);
 		exit(EXIT_FAILURE);
 	}
-	for (p = *head; len > 1; len--)
+	p = *head;
+	if (p->n == 0)
 	{
-		if (p->n == 0)
-		{
-			fprintf(stderr, "L%d: division by zero\n", count);
-			fclose(bus.file);
-			free(bus.content);
-			free_stack(*head);
-			exit(EXIT_FAILURE);
-		}
-		aptr = p->next->n % p->n;
-		p->next->n = aptr;
-		*head = p->next;
-		free(p);
+		fprintf(stderr, "L%d: division by zero\n", count);
+		fclose(bus.file);
+		free(bus.content);
+		free_stack(*head);
+		exit(EXIT_FAILURE);
 	}
+
+	aptr = p->next->n % p->n;
+	p->next->n = aptr;
+	aux = p->next;
+	*head = aux;
+	free(p);
 }

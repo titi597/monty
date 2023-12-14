@@ -37,7 +37,7 @@ void add_queue(stack_t **head, int n)
 
 	if (new_node == NULL)
 	{
-		printf("Error\n");
+		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
 	new_node->n = n;
@@ -51,9 +51,19 @@ void add_queue(stack_t **head, int n)
 	else
 	{
 		temp = *head;
-		while (temp->next != NULL)
-			temp = temp->next;
-		temp->next = new_node;
-		new_node->prev = temp;
+
+		if (bus.lifi == 0)
+		{
+			while (temp->next != NULL)
+				temp = temp->next;
+			temp->next = new_node;
+			new_node->prev = temp;
+		}
+		else
+		{
+			new_node->next = *head;
+			(*head)->prev = new_node;
+			*head = new_node;
+		}
 	}
 }

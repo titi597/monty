@@ -7,14 +7,14 @@
  */
 void t_rotl(stack_t **head, __attribute__((unused)) unsigned int count)
 {
-	stack_t *tmp, *aptr;
+	stack_t *tmp, *new_head;
 
 	if (*head == NULL || (*head)->next == NULL)
 	{
 		return;
 	}
 	tmp = *head;
-	aptr = (*head)->next;
+	new_head = (*head)->next;
 
 	while (tmp->next != NULL)
 	{
@@ -22,9 +22,14 @@ void t_rotl(stack_t **head, __attribute__((unused)) unsigned int count)
 	}
 	tmp->next = *head;
 	(*head)->prev = tmp;
-	(*head) = aptr;
-	aptr->prev = NULL;
-	tmp->next = NULL;
+	(*head) = new_head;
+	new_head->prev = NULL;
+	tmp->next->prev = NULL;
+
+	if (tmp->next != NULL)
+	{
+		tmp->next->next = NULL;
+	}
 }
 /**
  * t_rotr - function that rotates the stack to downwards
@@ -33,27 +38,28 @@ void t_rotl(stack_t **head, __attribute__((unused)) unsigned int count)
  */
 void t_rotr(stack_t **head, __attribute__((unused)) unsigned int count)
 {
-	stack_t *d_copy, *llat;
-
-	d_copy = *head;
+	stack_t *d_copy, *llat, *new_head;
 
 	if (*head == NULL || (*head)->next == NULL)
 	{
 		return;
 	}
+	d_copy = *head;
 	llat = d_copy;
-	for (; llat->next; llat = llat->next)
+
+	while (llat->next != NULL)
 	{
-		/* Loop body is empty as everything is now in the loop */
+		llat = llat->next;
 	}
 	llat->next = *head;
 	llat->prev->next = NULL;
 	llat->prev = NULL;
 
-	while ((*head)->next != NULL)
+	new_head = *head;
+	while (new_head->next != NULL)
 	{
-		(*head)->prev = llat;
-		(*head) = (*head)->next;
+		new_head = new_head->next;
 	}
-	(*head)->prev = llat;
+	new_head->prev = llat;
+	*head = llat;
 }

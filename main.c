@@ -1,36 +1,45 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "monty.h"
-
+bus_t bus = {NULL, NULL, NULL, 0};
 /**
- * main - Entry point for the interpreter.
- * @argc: Argument count.
- * @argv: Argument vector.
- * Return: Exit status.
- */
-int main(int argc, char **argv)
+* main - main function for monty code
+* @argc: an array of arguments
+* @argv: pointer to an array
+* Return: 0 (success)
+*/
+int main(int argc, char *argv[])
 {
+	char *content;
+	FILE *file;
+	size_t size = 0;
+	ssize_t read_line = 1;
 	stack_t *stack = NULL;
-	char *opcode;
+	unsigned int count = 0;
 
-	/* Example: Assuming the first argument is the opcode (push/pall) */
-	if (argc < 2)
+	if (argc != 2)
 	{
-		fprintf(stderr, "Usage: %s opcode [arguments]\n", argv[0]);
+		fprintf(stderr, "USAGE: monty file\n");
 		exit(EXIT_FAILURE);
 	}
-
-	opcode = argv[1];
-
-	if (strcmp(opcode, "push") == 0)
-		push(&stack, 0);
-	else if (strcmp(opcode, "pall") == 0)
-		pall(&stack, 0);
-	else
+	file = fopen(argv[1], "r");
+	bus.file = file;
+	if (!file)
 	{
-		fprintf(stderr, "L%d: unknown instruction %s\n", 0, opcode);
+		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
+	while (read_line > 0)
+	{
+		content = NULL;
+		read_line = getline(&content, &size, file);
+		bus.content = content;
+		count++;
+		if (read_line > 0)
+		{
+			t_execute(content, &stack, count, file);
+		}
+		free(content);
+	}
+	free_stack(stack);
+	fclose(file);
 	return (0);
 }

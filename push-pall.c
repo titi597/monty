@@ -1,64 +1,66 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 #include "monty.h"
 
 /**
- * push - Pushes an element onto the stack.
- * @stack: Double pointer to the head of the stack.
- * @line_number: Line number in the file.
+ * t_push - function that pushes node to the stack
+ * @head: pointer to an array of head
+ * @count: an array varaible
  */
-void push(stack_t **stack, unsigned int line_number)
+void t_push(stack_t **head, unsigned int count)
 {
-	char *arg;
-	int value;
-	stack_t *new_node;
+	int n, m = 0, flags = 0;
 
-	if (!stack)
+	if (bus.arg)
 	{
-		fprintf(stderr, "Error: Stack not initialized.\n");
+		if (bus.arg[0] == '-')
+			m++;
+		for (; bus.arg[m] != '\0'; m++)
+		{
+			if (bus.arg[m] > 57 || bus.arg[m] < 48)
+				flags = 1;
+		}
+		if (flags == 1)
+		{
+			fprintf(stderr, "L%d: usage: push integer\n", count);
+			fclose(bus.file);
+			free(bus.content);
+			free_stack(*head);
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		fprintf(stderr, "L%d: usage: push integer\n", count);
+		fclose(bus.file);
+		free(bus.content);
+		free_stack(*head);
 		exit(EXIT_FAILURE);
 	}
-	arg = strtok(NULL, " \n");
+	n = atoi(bus.arg);
 
-	if (!arg || !isdigit((unsigned char)*arg))
+	if (bus.lifi == 0)
 	{
-		fprintf(stderr, "L%d: usage: push integer\n", line_number);
-		exit(EXIT_FAILURE);
+		add_node(head, n);
 	}
-	value = atoi(arg);
-
-	new_node = malloc(sizeof(stack_t));
-
-	if (!new_node)
+	else
 	{
-		fprintf(stderr, "Error: Memory allocation failed.\n");
-		exit(EXIT_FAILURE);
+		add_queue(head, n);
 	}
-	new_node->n = value;
-	new_node->prev = NULL;
-	new_node->next = *stack;
-
-	if (*stack)
-		(*stack)->prev = new_node;
-	*stack = new_node;
 }
 
 /**
- * pall - Prints all the values on the stack.
- * @stack: Double pointer to the head of the stack.
- * @line_number: Line number in the file.
+ * t_pall - function that print the stack pall
+ * @head: pointer to an array of head
+ * @count: an array variable
  */
-void pall(stack_t **stack, unsigned int line_number)
+void t_pall(stack_t **head, unsigned int count)
 {
-	stack_t *current = *stack;
+	stack_t *p;
 
-	(void)line_number;
+	(void)count;
 
-	while (current)
+	p = *head;
+	for (; p; printf("%d\n", p->n), p = p->next)
 	{
-		printf("%d\n", current->n);
-		current = current->next;
+		/* Loop body is empty as everything is now in loop statement */
 	}
 }

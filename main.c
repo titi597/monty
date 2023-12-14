@@ -10,9 +10,9 @@ int main(int argc, char *argv[])
 {
 	char *content;
 	FILE *file;
-	size_t size = 0;
-	ssize_t read_line = 1;
-	stack_t *stack = NULL;
+	size_t depth = 0;
+	ssize_t rread = 1;
+	stack_t *stacks = NULL;
 	unsigned int count = 0;
 
 	if (argc != 2)
@@ -27,19 +27,19 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 		exit(EXIT_FAILURE);
 	}
-	while (read_line > 0)
+	while (rread > 0)
 	{
 		content = NULL;
-		read_line = getline(&content, &size, file);
+		rread = getline(&content, &depth, file);
 		bus.content = content;
 		count++;
-		if (read_line > 0)
+		if (rread > 0)
 		{
-			t_execute(content, &stack, count, file);
+			t_execute(content, &stacks, count, file);
 		}
 		free(content);
 	}
-	free_stack(stack);
+	free_stack(stacks);
 	fclose(file);
 	return (0);
 }
